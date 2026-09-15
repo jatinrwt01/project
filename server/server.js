@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ app.get("/api/health", (req, res) => {
         message: "Knowledge Workspace API is running"
     });
 });
+
+app.use("/api/auth", authRoutes);
 
 mongoose.connect(process.env.MONGODB_URL)
     .then(() => {
