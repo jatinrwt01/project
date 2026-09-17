@@ -25,3 +25,21 @@ export const createWorkspace = async(req,res)=>{
         });
     }
 };
+
+
+export const getWorkspaces = async(req, res)=>{
+    try{
+        const workspaces = await workspaceModel.find({
+            userId: req.user
+        });
+        return res.status(200).json({
+            workspaces
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Something went wrong"
+        });
+    }
+};
