@@ -43,3 +43,29 @@ export const getWorkspaces = async(req, res)=>{
         });
     }
 };
+
+
+export const getWorkspace = async(req, res)=>{
+    try{
+        const { workspaceId } = req.params;
+        const workspace = await workspaceModel.findOne({
+            _id: workspaceId,
+            userId: req.user
+        });
+
+        if(!workspace){
+            return res.status(404).json({
+                message: "Workspace not found"
+            });
+        }
+        return res.status(200).json({
+            workspace
+        });
+
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({
+            message: "Something went wrong"
+        });
+    }
+};
