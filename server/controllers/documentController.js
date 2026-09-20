@@ -97,3 +97,72 @@ export const deleteDocument = async(req, res)=>{
         });
     }
 };
+
+export const getWorkspaceDocuments = async(req, res)=>{
+    try{
+        const { workspaceId } = req.params;
+        if(!mongoose.Types.ObjectId.isValid(workspaceId)){
+            return res.status(400).json({
+                message: "Invalid workspace ID"
+            });
+        }
+        const workspace = await verifyWorkspaceOwnership(
+            workspaceId,
+            req.user
+        );
+
+        if(!workspace){
+            return res.status(404).json({
+                message: "Workspace not found"
+            });
+        }
+        const documents = await documentModel
+            .find({ workspaceId })
+            .sort({ createdAt: -1 });
+        return res.status(200).json({
+            documents
+        });
+
+    } catch(error){
+        console.log("GET WORKSPACE DOCUMENTS ERROR:", error);
+        return res.status(500).json({
+            message: "Something went wrong"
+        });
+    }
+};
+
+export const getDocument = async(req, res) =>{
+    try{
+        const { documentId } = req.params;
+        if(!mongoose.Types.ObjectId.isValid(documentId)){
+            return res.status(400).json({
+                message: "Invalid document ID"
+            });
+        }
+        const document = await documentModel.findById(documentId);
+        if(!document){
+            return res.status(404).json({
+                message: "Document not found"
+            });
+        }
+        const workspace = await verifyWorkspaceOwnership(
+            document.workspaceId,
+            req.user
+        );
+
+        if(!workspace){
+            return res.status(404).json({
+                message: "Document not found"
+            });
+        }
+        return res.status(200).json({
+            document
+        });
+
+    }catch(error){
+        console.log("GET DOCUMENT ERROR:", error);
+        return res.status(500).json({
+            message: "Something went wrong"
+        });
+    }
+};
