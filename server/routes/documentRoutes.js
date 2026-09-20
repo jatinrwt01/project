@@ -1,7 +1,7 @@
 import express from "express";
 import authMiddleware from "../middlewares/authMiddleware.js";
 import upload from "../middlewares/uploadMiddleware.js";
-import { uploadDocument } from "../controllers/documentController.js";
+import { uploadDocument, deleteDocument } from "../controllers/documentController.js";
 
 const router = express.Router();
 
@@ -10,6 +10,12 @@ router.post(
     authMiddleware,
     upload.single("file"),
     uploadDocument
+);
+
+router.delete(
+    "/:documentId",
+    authMiddleware,
+    deleteDocument
 );
 
 export default router;

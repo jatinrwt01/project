@@ -1,7 +1,8 @@
 import documentModel from "../models/document.js";
 import verifyWorkspaceOwnership from "../services/workspaceService.js";
-import uploadToCloudinary from "../services/cloudinaryService.js";
+import {uploadToCloudinary, deleteFromCloudinary} from "../services/cloudinaryService.js";
 import fs from "fs/promises";
+import mongoose from "mongoose";
 
 export const uploadDocument = async(req, res)=>{
     try{
@@ -30,9 +31,10 @@ export const uploadDocument = async(req, res)=>{
             ),
             workspaceId,
             status: "ready",
-            storageLocation: result.secure_url
+            storageLocation: result.secure_url,
+            cloudinaryPublicId: result.public_id
         });
-
+        console.log("Temporary file:", req.file.path);
         await fs.unlink(req.file.path);
 
         return res.status(201).json({
@@ -51,6 +53,45 @@ export const uploadDocument = async(req, res)=>{
             }
         }
 
+        return res.status(500).json({
+            message: "Something went wrong"
+        });
+    }
+};
+
+export const deleteDocument = async(req, res)=>{
+    try{
+        const { documentId } = req.params;
+        if(!mongoose.Types.ObjectId.isValid(documentId)){
+             return res.status(400).json({
+                message: "Invalid document ID"
+             });
+        }
+        const document = await documentModel.findById(documentId);
+        if(!document){
+            return res.status(404).json({
+                message: "Document not found"
+            });
+        }
+        const workspace = await verifyWorkspaceOwnership(
+            document.workspaceId,
+            req.user
+        );
+        if(!workspace){
+            return res.status(404).json({
+                message: "Document not found"
+            });
+        }
+        await deleteFromCloudinary(document.cloudinaryPublicId);
+
+        await documentModel.findByIdAndDelete(documentId);
+
+        return res.status(200).json({
+            message: "Document deleted successfully"
+        });
+
+    }catch(error){
+        console.log("DOCUMENT DELETE ERROR:", error);
         return res.status(500).json({
             message: "Something went wrong"
         });

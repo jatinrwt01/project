@@ -8,4 +8,11 @@ const uploadToCloudinary = async(filePath)=>{
     return response;
 };
 
-export default uploadToCloudinary;
+const deleteFromCloudinary = async(publicId)=>{
+    const response = await cloudinary.uploader.destroy(publicId,{
+        resource_type:"raw"
+    });
+    return response;
+}
+
+export {uploadToCloudinary, deleteFromCloudinary}

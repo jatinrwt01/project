@@ -24,6 +24,10 @@ const documentSchema = new mongoose.Schema(
         storageLocation:{
             type: String,
             required: true
+        },
+        cloudinaryPublicId:{
+            type: String,
+             required: true
         }
     },
     {timestamps: true}
