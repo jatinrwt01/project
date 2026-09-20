@@ -1,28 +1,18 @@
-import{useEffect,useState} from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 
-function App(){
-    const[message, setMessage] = useState("");
-
-    useEffect(()=>{
-        const getBackendStatus = async()=>{
-            try{
-                const response = await fetch("http://localhost:9000/api/health");
-                const data=await response.json();
-                console.log(data.message)
-                setMessage(data.message);
-            }catch (error){
-                console.log("Error connecting to backend:", error);
-            }
-        };
-        getBackendStatus();
-    }, []);
-
+function App() {
     return (
-        <div>
-            <h1>Project</h1>
-            <p>Backend status:</p>
-            <p>{message}</p>
-        </div>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<h1>Home</h1>} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/dashboard" element={<Dashboard/>} />
+            </Routes>
+        </BrowserRouter>
     );
 }
 
