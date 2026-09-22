@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 function Dashboard(){
     const [workspaces, setWorkspaces] = useState([]);
@@ -97,8 +98,10 @@ function Dashboard(){
                 <ul>
                     {workspaces.map((workspace) => (
                         <li key={workspace._id}>
-                            {workspace.name}
-                        </li>
+                        <Link to={`/workspace/${workspace._id}`}>
+                        {workspace.name}
+                        </Link>
+                      </li>
                     ))}
                 </ul>
             )}
