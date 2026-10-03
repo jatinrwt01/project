@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import workspaceRoutes from "./routes/workspaceRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import conversationRoutes from "./routes/conversationRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/workspaces", workspaceRoutes);
 app.use("/api/documents", documentRoutes);
 app.use("/api/conversations", conversationRoutes);
+app.use("/api/messages", messageRoutes);
 
 
 mongoose.connect(process.env.MONGODB_URL)
